@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Unit + Integration Tests (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11"]
+
+    env:
+      HABIT_DB: test_habits.db
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip wheel setuptools
+          pip install -r requirements-dev.txt
+          pip install -e .
+
+      - name: Lint (ruff)
+        run: ruff check habit_tracker tests
+
+      - name: Format check (black)
+        run: black --check habit_tracker tests
+
+      - name: Type check (mypy)
+        run: mypy habit_tracker
+
+      - name: Unit tests
+        run: pytest tests/unit -v -m unit
+
+      - name: Integration tests
+        run: pytest tests/integration -v -m integration
+
+      - name: Full test run with coverage
+        run: |
+          pytest tests -v \
+            --cov=habit_tracker \
+            --cov-report=term-missing \
+            --cov-report=xml \
+            --cov-fail-under=85
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-xml
+          path: coverage.xml
+          if-no-files-found: ignore
