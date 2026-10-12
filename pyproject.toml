@@ -1,0 +1,84 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "habit-tracker"
+version = "0.1.0"
+description = "Habit tracking app — OOP domain, FP analytics, CLI + FastAPI."
+readme = "README.md"
+requires-python = ">=3.11"
+license =  "MIT"
+authors = [{ name = "Alejandro Diaz Roque", email = "corolariodiaz@gmail.com" }]
+
+dependencies = [
+  "fastapi>=0.110",
+  "uvicorn[standard]>=0.29",
+  "typer>=0.12",
+  "pydantic>=2.6",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "pytest-cov>=5.0",
+  "pytest-watch>=4.2",
+  "httpx>=0.27",
+  "ruff>=0.4",
+  "black>=24.3",
+  "mypy>=1.10",
+  "build>=1.2",
+  "pre-commit>=3.7",
+  "ipython>=8.22",
+]
+
+[project.scripts]
+habit     = "habit_tracker.cli.main:app"
+habit-api = "habit_tracker.api.main:run"
+
+[tool.setuptools.packages.find]
+include = ["habit_tracker*"]
+
+# ---------- Black ----------
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+# ---------- Ruff ----------
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["habit_tracker", "tests"]
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = true
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "C4", "PT"]
+ignore = ["E501"]  # line length handled by black
+
+[tool.ruff.lint.per-file-ignores]
+# FastAPI uses function calls (Depends, Query, Path, Body, etc.) in
+# argument defaults by design — this is not the anti-pattern B008 warns about.
+"habit_tracker/api/**/*.py" = ["B008"]
+
+# ---------- mypy ----------
+[tool.mypy]
+python_version = "3.11"
+warn_unused_ignores = true
+warn_redundant_casts = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+files = ["habit_tracker"]
+explicit_package_bases = true
+mypy_path = "."
+
+# ---------- pytest ----------
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --strict-config"
+markers = [
+  "unit: fast, isolated unit tests",
+  "integration: tests touching multiple layers (DB, API, CLI)",
+]
