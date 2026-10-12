@@ -54,6 +54,11 @@ src = ["habit_tracker", "tests"]
 select = ["E", "F", "I", "B", "UP", "SIM", "C4", "PT"]
 ignore = ["E501"]  # line length handled by black
 
+[tool.ruff.lint.per-file-ignores]
+# FastAPI uses function calls (Depends, Query, Path, Body, etc.) in
+# argument defaults by design — this is not the anti-pattern B008 warns about.
+"habit_tracker/api/**/*.py" = ["B008"]
+
 # ---------- mypy ----------
 [tool.mypy]
 python_version = "3.11"
@@ -62,6 +67,8 @@ warn_redundant_casts = true
 disallow_untyped_defs = true
 ignore_missing_imports = true
 files = ["habit_tracker"]
+explicit_package_bases = true
+mypy_path = "."
 
 # ---------- pytest ----------
 [tool.pytest.ini_options]

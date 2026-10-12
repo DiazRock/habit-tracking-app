@@ -6,12 +6,13 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from habit_tracker.api.deps import get_tracker
 from habit_tracker.api.schemas import HabitCreate, HabitOut
+from habit_tracker.core.models import Habit
 from habit_tracker.core.tracker import HabitTracker
 
 router = APIRouter()
 
 
-def _to_out(habit) -> HabitOut:
+def _to_out(habit: Habit) -> HabitOut:
     return HabitOut(
         id=habit.habit_id,
         name=habit.name,
@@ -27,9 +28,7 @@ def list_habits(tracker: HabitTracker = Depends(get_tracker)) -> list[HabitOut]:
 
 
 @router.post("", response_model=HabitOut, status_code=status.HTTP_201_CREATED)
-def create_habit(
-    payload: HabitCreate, tracker: HabitTracker = Depends(get_tracker)
-) -> HabitOut:
+def create_habit(payload: HabitCreate, tracker: HabitTracker = Depends(get_tracker)) -> HabitOut:
     habit = tracker.create_habit(
         name=payload.name,
         description=payload.description,
@@ -39,9 +38,7 @@ def create_habit(
 
 
 @router.get("/{habit_id}", response_model=HabitOut)
-def get_habit(
-    habit_id: int, tracker: HabitTracker = Depends(get_tracker)
-) -> HabitOut:
+def get_habit(habit_id: int, tracker: HabitTracker = Depends(get_tracker)) -> HabitOut:
     try:
         return _to_out(tracker.get_habit(habit_id))
     except KeyError as exc:

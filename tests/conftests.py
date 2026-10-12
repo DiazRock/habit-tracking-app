@@ -2,11 +2,8 @@
 
 from __future__ import annotations
 
-import os
-
 import pytest
 from fastapi.testclient import TestClient
-
 from habit_tracker.api.deps import build_tracker
 from habit_tracker.api.main import create_app
 

@@ -14,9 +14,7 @@ def list_all_habits(tracker: HabitTracker) -> list[Habit]:
     return tracker.all_habits()
 
 
-def list_habits_by_periodicity(
-    tracker: HabitTracker, periodicity: str
-) -> list[Habit]:
+def list_habits_by_periodicity(tracker: HabitTracker, periodicity: str) -> list[Habit]:
     return [h for h in tracker.all_habits() if h.periodicity == periodicity]
 
 

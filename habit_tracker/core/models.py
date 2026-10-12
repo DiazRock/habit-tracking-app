@@ -27,14 +27,12 @@ class Habit:
     name: str
     description: str
     periodicity: Periodicity
+    habit_id: int
     created_at: datetime = field(default_factory=datetime.now)
-    habit_id: int | None = None
     completions: list[Completion] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         if not self.name.strip():
             raise ValueError("Habit name must not be empty.")
         if self.periodicity not in ("daily", "weekly"):
-            raise ValueError(
-                f"periodicity must be 'daily' or 'weekly', got {self.periodicity!r}"
-            )
+            raise ValueError(f"periodicity must be 'daily' or 'weekly', got {self.periodicity!r}")

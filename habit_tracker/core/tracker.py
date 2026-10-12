@@ -6,7 +6,6 @@ from habit_tracker.core.models import Habit
 from habit_tracker.core.storage import Storage
 
 
-
 class HabitTracker:
     """High-level API used by both the CLI and the REST API.
 
@@ -19,16 +18,14 @@ class HabitTracker:
         self._habits: dict[int, Habit] = {}
         self._next_id: int = 1
 
-    def create_habit(
-        self, name: str, description: str, periodicity: str
-    ) -> Habit:
+    def create_habit(self, name: str, description: str, periodicity: str) -> Habit:
         habit = Habit(
             name=name,
             description=description,
             periodicity=periodicity,  # type: ignore[arg-type]
             habit_id=self._next_id,
         )
-        self._habits[habit.habit_id] = habit  # type: ignore[index]
+        self._habits[habit.habit_id] = habit
         self._next_id += 1
         return habit
 
