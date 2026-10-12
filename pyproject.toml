@@ -50,6 +50,9 @@ line-length = 100
 target-version = "py311"
 src = ["habit_tracker", "tests"]
 
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = true
+
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM", "C4", "PT"]
 ignore = ["E501"]  # line length handled by black
