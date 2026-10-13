@@ -22,8 +22,6 @@ class Completion:
 
 @dataclass
 class Habit:
-    """A habit the user wants to track."""
-
     name: str
     description: str
     periodicity: Periodicity
@@ -36,3 +34,21 @@ class Habit:
             raise ValueError("Habit name must not be empty.")
         if self.periodicity not in ("daily", "weekly"):
             raise ValueError(f"periodicity must be 'daily' or 'weekly', got {self.periodicity!r}")
+
+    def complete(self, when: datetime | None = None) -> Completion:
+        """Record a completion and return it.
+
+        Appends a new :class:`Completion` to ``self.completions`` using the
+        supplied timestamp (or ``datetime.now()`` when omitted) and returns
+        it so the caller can persist it via ``Storage.save_completion``.
+
+        The method is deliberately impure about ``self.completions`` — the
+        tracker is expected to persist the returned completion immediately,
+        and the in-memory list must stay in sync with what is on disk.
+        """
+        completion = Completion(
+            habit_id=self.habit_id,
+            completed_at=when if when is not None else datetime.now(),
+        )
+        self.completions.append(completion)
+        return completion

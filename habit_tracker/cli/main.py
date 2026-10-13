@@ -9,6 +9,7 @@ or, without installing:
 from __future__ import annotations
 
 import os
+from typing import Literal
 
 import typer
 
@@ -56,7 +57,9 @@ _state = _State()
 def create(
     name: str = typer.Option(..., "--name", "-n", help="Habit name."),
     description: str = typer.Option("", "--description", "-d", help="Habit description."),
-    periodicity: str = typer.Option(..., "--periodicity", "-p", help="'daily' or 'weekly'."),
+    periodicity: Literal["daily", "weekly"] = typer.Option(
+        ..., "--periodicity", "-p", help="'daily' or 'weekly'."
+    ),
 ) -> None:
     """Create a new habit."""
     tracker = _build_tracker(_state.db)
