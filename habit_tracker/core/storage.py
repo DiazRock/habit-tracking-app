@@ -222,20 +222,16 @@ class Storage:
         the classic N+1 anti-pattern.
         """
         with self._connect() as conn:
-            habit_rows = conn.execute(
-                """
+            habit_rows = conn.execute("""
                 SELECT id, name, description, periodicity, created_at
                 FROM habits
                 ORDER BY id
-                """
-            ).fetchall()
-            completion_rows = conn.execute(
-                """
+                """).fetchall()
+            completion_rows = conn.execute("""
                 SELECT habit_id, completed_at
                 FROM completions
                 ORDER BY habit_id, completed_at
-                """
-            ).fetchall()
+                """).fetchall()
 
         # Group completions by habit_id.
         completions_by_habit: dict[int, list[Completion]] = {}
