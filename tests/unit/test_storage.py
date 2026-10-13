@@ -28,7 +28,7 @@ def storage(tmp_path) -> Storage:
 
 def _habit(habit_id: int = 1, **overrides) -> Habit:
     """Build a valid Habit with sensible defaults, overriding as needed."""
-    fields = dict[str, object] = {
+    fields: dict[str, object] = {
         "name": "Drink water",
         "description": "2L per day",
         "periodicity": "daily",
