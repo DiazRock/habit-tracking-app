@@ -61,6 +61,7 @@ ignore = ["E501"]  # line length handled by black
 # FastAPI uses function calls (Depends, Query, Path, Body, etc.) in
 # argument defaults by design — this is not the anti-pattern B008 warns about.
 "habit_tracker/api/**/*.py" = ["B008"]
+"habit_tracker/cli/**/*.py" = ["B008"]
 
 # ---------- mypy ----------
 [tool.mypy]
