@@ -39,3 +39,20 @@ def test_invalid_periodicity_returns_422(client):
         json={"name": "X", "description": "", "periodicity": "monthly"},
     )
     assert r.status_code == 422
+
+
+def test_habit_persists_across_requests(client):
+    """Create a habit, then read it back via a separate request.
+
+    Exercises router → tracker → storage → SQLite end-to-end.
+    """
+    created = client.post(
+        "/habits",
+        json={"name": "Water", "description": "", "periodicity": "daily"},
+    )
+    assert created.status_code == 201
+    habit_id = created.json()["id"]
+
+    fetched = client.get(f"/habits/{habit_id}")
+    assert fetched.status_code == 200
+    assert fetched.json()["name"] == "Water"
